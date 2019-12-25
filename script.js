@@ -1,97 +1,56 @@
+let buttonCalculate = document.getElementById("calculate");
+let buttonAddToArray = document.getElementById("addToArray");
+let buttonRemoveLast = document.getElementById("removeLast");
+let buttonClearArray = document.getElementById("clearArray");
+let arrayOnPage = document.getElementById("array");
 
-var $table = $("#tableBody");
-var $numberOfForm = $("#number");
-var $leftButton = $("#left");
-var $rightButton = $("#right");
-var $totalPages = $("#totalPages");
-var currentPage = 1;
-var titles;
-var numOfPages;
+buttonCalculate.addEventListener("click",createLargestNumber);
+buttonAddToArray.addEventListener("click",addToArray);
+buttonRemoveLast.addEventListener("click",removeLastElemOfArray);
+buttonClearArray.addEventListener("click",clearArray);
 
-function send() {
-	
-    $.ajax('https://content.guardianapis.com/search?page=' + currentPage + '&show-blocks=body&api-key=7ddad5bc-aaef-41ed-b171-c7400d32bc2f')
-        .then(content => {
-            numOfPages = content.response.pages;
-            titles = content.response.results;
-            $totalPages[0].innerHTML = numOfPages;
-            
-            $table.html(generateTableHtml(titles));
-            showOrHide();
-        })
-        
+let array = [];
 
-}
-
-									//${content.blocks.body[0].bodyTextSummary}
-
-function generateTableHtml(content) {
-    if (content.length) {
-
-        return content.map(content =>`<div class = "item">${content.webTitle} 
-        							  	<span class = "v">v</span>
-        							  </div>
-										<div class = "item accordion">
-											${content.blocks.body[0].bodyTextSummary} 
-											<br> <a href = "${content.webUrl}" target="_blank">Read full news</a>
-										</div>
-        							  `);
-	    
-    } else {
-        return '<p>sorry we couldnt find news for you. Please try again later</p>';
+ function createLargestNumber() {						//function createLargestNumber()
+    if (!array.length){
+        alert("Array is empty!");
+        return;
     }
+    let sortedArray = bubbleSort(array);
+
+    alert("rezult is " + Number(sortedArray.join('')));
 }
 
-//pagination
-function increase() {
-	if (currentPage < numOfPages) {
-		currentPage++;
-		send();
-	$numberOfForm[0].value = currentPage;
-	}
-}
-function decrease() {
-	if (currentPage > 1) {
-		currentPage--;
-		send();
-	$numberOfForm[0].value = currentPage;
-	}
+function addToArray() {
+    let num = prompt("input number more or equal to zero");
 
-}
-function numberForm(){
-	currentPage = $numberOfForm[0].value;
-	showOrHide()
-}
-function showOrHide(){
-	if (currentPage <= 1)
-    	$leftButton[0].style.display = 'none';
-    else
-    	$leftButton[0].style.display = 'inline';
+    if(!/^\d+$/.test(num)) return;
 
-    if (currentPage >= numOfPages)
-    	$rightButton[0].style.display = 'none';
-    else
-    	$rightButton[0].style.display = 'inline';
+    array.push(Number(num));
+    arrayOnPage.innerHTML = array;
 }
+function removeLastElemOfArray() {
+    array.pop();
+    arrayOnPage.innerHTML = array;
+}
+function clearArray() {
+    array = [];
+    arrayOnPage.innerHTML = array;
+}
+function bubbleSort(Array) {
 
+    for (let i = 0; i < Array.length-1; i++) {
+    	for (let j = 0; j < Array.length-1-i; j++) {
+    		if (firstNumberToFront(Array[j+1],Array[j])) {
+    			let temp = Array[j+1]; Array[j+1] = Array[j]; Array[j] = temp;
+    		}
+    	}
+    }
+    return Array;
+}
+function firstNumberToFront(num1, num2) {
+	let firstVariant = num1.toString() + num2.toString();
+	let secondVariant = num2.toString() + num1.toString();
 
-//accordination
-function changeAccordination(){
-	console.log("обработчик табле бади");
-	console.log(window.event.target.className);
-	            //window.event.target.nextElementSibling.style.display = 'block';	   // доступ к описанию
-          		//window.event.target.children[0].style.transform = 'rotate(180deg)';  // доступ к галочке
-          		//window.event.target.style.backgroundColor = "blue";				   // доступ к заголовку
- 	if (window.event.target.className == "item"){
- 		if (window.event.target.nextElementSibling.style.display == ''){
- 			window.event.target.nextElementSibling.style.display = 'block';
- 			window.event.target.children[0].style.transform = 'rotate(180deg)';
- 			window.event.target.style.backgroundColor = "dodgerblue";
- 		}
- 		else{
- 			window.event.target.nextElementSibling.style.display = '';
- 			window.event.target.children[0].style.transform = 'rotate(0deg)';
- 			window.event.target.style.backgroundColor = "";
- 		}
- 	}
- }
+    return Number(firstVariant) >= Number(secondVariant);
+}
