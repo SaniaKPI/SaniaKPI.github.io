@@ -18,7 +18,7 @@ let array = [];
     }
     let sortedArray = bubbleSort(array);
 
-    alert("rezult is " + Number(sortedArray.join('')));
+    alert("result is " + Number(sortedArray.join('')));
 }
 
 function addToArray() {
