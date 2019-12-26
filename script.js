@@ -9,7 +9,7 @@ buttonAddToArray.addEventListener("click",addToArray);
 buttonRemoveLast.addEventListener("click",removeLastElemOfArray);
 buttonClearArray.addEventListener("click",clearArray);
 
-let array;
+let array = [];
 
  function createLargestNumber() {						
     if (!array.length){
